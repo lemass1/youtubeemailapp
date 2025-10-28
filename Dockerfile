@@ -1,53 +1,37 @@
-# -------------------------
-# Stage 1: Build frontend
-# -------------------------
-FROM node:20-alpine AS frontend-build
+# Stage 1: Build React frontend
+FROM node:20 AS frontend-build
 
-# Set working directory
 WORKDIR /app/frontend
 
-# Copy only frontend files to leverage Docker cache
+# Copy only frontend files first (to leverage cache)
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm install
-
-# Copy all frontend source files
-COPY frontend/. .
-
-# Build React app
+COPY frontend/ ./
 RUN npm run build
 
-# -------------------------
-# Stage 2: Build backend
-# -------------------------
+# Stage 2: Build Spring Boot backend
 FROM maven:3.9.2-eclipse-temurin-17 AS backend-build
 
-# Set working directory
 WORKDIR /app
 
-# Copy backend pom.xml
+# Copy pom.xml first for caching
 COPY pom.xml ./
+COPY frontend/pom.xml ./frontend/ # optional if you have separate pom.xml
+RUN mvn dependency:go-offline
 
-# Copy backend source code
+# Copy backend source
 COPY src ./src
+COPY frontend/build ./src/main/resources/static
 
-# Copy React build from frontend stage into backend static folder
-COPY --from=frontend-build /app/frontend/build ./src/main/resources/static
-
-# Build Spring Boot JAR
+# Package Spring Boot app
 RUN mvn clean package -DskipTests
 
-# -------------------------
-# Stage 3: Runtime
-# -------------------------
-FROM eclipse-temurin:17-jre-alpine
+# Stage 3: Run the app
+FROM eclipse-temurin:17-jdk-jammy
 
 WORKDIR /app
+COPY --from=backend-build /app/target/youtubeemailapp-0.0.1-SNAPSHOT.jar ./youtubeemailapp.jar
 
-# Copy JAR from backend build stage
-COPY --from=backend-build /app/target/*.jar app.jar
-
-# Expose port
 EXPOSE 8080
 
-# Run the Spring Boot app
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "youtubeemailapp.jar"]
