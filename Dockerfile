@@ -1,23 +1,44 @@
-# ---------- Stage 1: Build React frontend ----------
-FROM node:20 AS frontend-build
+# ---------- FRONTEND BUILD ----------
+FROM node:18-alpine AS frontend-build
 WORKDIR /app/frontend
+
+# Copy only dependency files first (for better caching)
 COPY frontend/package*.json ./
-RUN npm install
+RUN npm install --legacy-peer-deps
+
+# Copy the rest of the frontend source and build it
 COPY frontend/ ./
 RUN npm run build
 
-# ---------- Stage 2: Build Spring Boot backend ----------
-FROM maven:3.9.3-eclipse-temurin-17 AS backend-build
+# ---------- BACKEND BUILD ----------
+FROM maven:3.9.6-eclipse-temurin-17 AS backend-build
 WORKDIR /app
-COPY pom.xml ./
+
+# Copy only Maven descriptor first (for caching dependencies)
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+# Copy backend source
 COPY src ./src
-# Copy the React build output into Spring Boot static folder
+
+# Copy frontend build output into Spring Boot static resources
 COPY --from=frontend-build /app/frontend/build ./src/main/resources/static
+
+# Package the Spring Boot app (no tests for faster build)
 RUN mvn clean package -DskipTests
 
-# ---------- Stage 3: Run the Spring Boot JAR ----------
-FROM eclipse-temurin:17-jre
+# ---------- RUNTIME IMAGE ----------
+FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
-COPY --from=backend-build /app/target/youtubeemailapp-0.0.1-SNAPSHOT.jar ./youtubeemailapp.jar
+
+# Copy packaged JAR from backend build
+COPY --from=backend-build /app/target/*.jar app.jar
+
+# Render dynamically provides PORT; expose for clarity
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "youtubeemailapp.jar"]
+
+# Use environment variable PORT if present (Render sets this automatically)
+ENV PORT=8080
+
+# Run Spring Boot on Render-provided port
+ENTRYPOINT ["java", "-jar", "app.jar"]
