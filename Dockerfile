@@ -1,21 +1,22 @@
-# ---------- FRONTEND BUILD ----------
+# ------------------ FRONTEND BUILD ------------------
 FROM node:18-alpine AS frontend-build
 
+# Set working directory inside container
 WORKDIR /app/frontend
 
-# Copy only package.json & package-lock.json first
-COPY frontend/package.json frontend/package-lock.json ./
+# Copy only package.json and package-lock.json to leverage Docker cache
+COPY frontend/package*.json ./
 
-# Install dependencies
+# Install frontend dependencies
 RUN npm install --legacy-peer-deps
 
-# Copy all frontend source files
-COPY frontend/. ./
+# Copy rest of frontend source code
+COPY frontend/ ./
 
 # Build React app
 RUN npm run build
 
-# ---------- BACKEND BUILD ----------
+# ------------------ BACKEND BUILD ------------------
 FROM maven:3.9.11-eclipse-temurin-17 AS backend-build
 
 WORKDIR /app
@@ -24,25 +25,25 @@ WORKDIR /app
 COPY mvnw pom.xml ./
 COPY .mvn .mvn
 
-# Copy backend source
+# Copy backend source code
 COPY src ./src
 
-# Copy React build from frontend-build
+# Copy React build output into Spring Boot static resources
 COPY --from=frontend-build /app/frontend/build ./src/main/resources/static
 
-# Build Spring Boot app
-RUN ./mvnw clean package -DskipTests
+# Package Spring Boot application (skip tests)
+RUN ./mvnw clean package -DskipTests -Dskip.npm=true
 
-# ---------- FINAL IMAGE ----------
+# ------------------ FINAL IMAGE ------------------
 FROM eclipse-temurin:17-jre
 
 WORKDIR /app
 
-# Copy the packaged Spring Boot jar
+# Copy the Spring Boot jar from backend-build stage
 COPY --from=backend-build /app/target/youtubeemailapp-0.0.1-SNAPSHOT.jar ./youtubeemailapp.jar
 
-# Expose port
+# Expose port 8080
 EXPOSE 8080
 
-# Start the app
+# Run the Spring Boot application
 CMD ["java", "-jar", "youtubeemailapp.jar"]
