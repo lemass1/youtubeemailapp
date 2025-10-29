@@ -1,0 +1,66 @@
+/* Center the intro text beautifully */
+.videos-header {
+  text-align: center;
+  padding: 3em 1em;
+  color: #fff;
+}
+
+.videos-intro-text {
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6em;
+  font-size: 1.1em;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Carousel container */
+.videos-carousel {
+  overflow-x: auto;
+  display: flex;
+  scroll-snap-type: x mandatory;
+  padding: 2em 1em;
+}
+
+.videos-scroll {
+  display: flex;
+  gap: 1.5em;
+  scroll-snap-type: x mandatory;
+}
+
+.video-card {
+  flex: 0 0 320px;
+  scroll-snap-align: start;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  padding: 1em;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.video-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
+}
+
+.video-card h2 {
+  color: #fff;
+  font-size: 1.1em;
+  margin-bottom: 0.5em;
+}
+
+.video-thumb iframe {
+  border-radius: 10px;
+}
+#overlay {
+  background-color: rgba(0, 0, 0, 0.65); /* increase darkness */
+}
+
+/* Smooth scroll on drag for touch devices */
+.videos-carousel::-webkit-scrollbar {
+  height: 8px;
+}
+.videos-carousel::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}

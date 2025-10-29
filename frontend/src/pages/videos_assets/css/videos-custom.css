@@ -1,0 +1,247 @@
+/* =============================
+   Shared Styles (Videos + Contact)
+   ============================= */
+
+/* Header */
+.videos-header {
+  text-align: center;
+  padding: 2em 1em 0;
+  color: #fff;
+}
+
+.videos-intro-text {
+  max-width: 800px;
+  margin: 0 auto 1em;
+  line-height: 1.6em;
+  font-size: 1.1em;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Carousel container inside header */
+.videos-carousel-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1em auto 2em;
+  width: 90%;
+  max-width: 1200px;
+}
+
+/* Horizontal scroll carousel */
+.videos-carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  gap: 1.5em;
+  padding: 1em;
+  scroll-snap-type: x mandatory;
+}
+
+.video-card {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1em;
+  min-width: 320px;
+  scroll-snap-align: start;
+  transition: transform 0.3s ease;
+}
+
+.video-card:hover {
+  transform: scale(1.03);
+}
+
+.video-card h2 {
+  color: #ffd65a;
+  font-size: 1.1em;
+  margin-bottom: 0.5em;
+}
+
+.video-thumb iframe {
+  border-radius: 10px;
+}
+
+/* Scroll buttons */
+.scroll-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border: none;
+  font-size: 2rem;
+  padding: 0.3em 0.5em;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  z-index: 2;
+}
+
+.scroll-btn:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.scroll-btn.left {
+  margin-right: 0.5em;
+}
+
+.scroll-btn.right {
+  margin-left: 0.5em;
+}
+
+/* =============================
+   Fade-in Animation (Shared)
+   ============================= */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1.2s forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =============================
+   Contact Page – Dark Theme
+   ============================= */
+
+#main {
+  color: #fff;
+}
+
+/* Header Image */
+.contact-header-img {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  margin: 1.5em auto 1em;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  transition: transform 0.4s ease;
+}
+.devotional-message {
+  margin-top: 0.8em;
+  font-size: 1em;
+  color: #ffd65a;
+  font-style: italic;
+}
+
+.contact-header-img:hover {
+  transform: scale(1.05);
+}
+
+/* Devotional Section (Dark) */
+.devotional-section-light {
+  background: rgba(0, 0, 0, 0.75);
+  color: #f0f0f0;
+  padding: 1.5em 2em;
+  margin: 1.5em auto;
+  border-radius: 12px;
+  max-width: 800px;
+  text-align: center;
+  box-shadow: 0 3px 20px rgba(0, 0, 0, 0.5);
+}
+
+.devotional-section-light h2 {
+  color: #ffd65a;
+  font-weight: 700;
+  margin-bottom: 0.8em;
+}
+
+.devotional-verse-light {
+  font-style: italic;
+  color: #fff;
+  line-height: 1.7em;
+}
+
+.devotional-verse-light footer {
+  margin-top: 0.5em;
+  color: #ccc;
+  font-size: 0.9em;
+}
+
+/* Contact Form (Dark) */
+.contact-section {
+  text-align: center;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 2em 1.5em;
+  margin: 2em auto;
+  border-radius: 15px;
+  max-width: 800px;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.6);
+}
+
+.contact-section h2 {
+  color: #ffd65a;
+  margin-bottom: 1em;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  margin-top: 1em;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 0.9em;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 1em;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #ffd65a;
+}
+
+/* Send Button */
+.send-btn {
+  background: linear-gradient(135deg, #ffd65a, #f0c040);
+  color: #000;
+  border: none;
+  padding: 0.9em 2em;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.send-btn:hover {
+  background: linear-gradient(135deg, #ffe680, #f8d24a);
+  transform: scale(1.05);
+}
+
+/* Status message */
+.status-message {
+  margin-top: 1em;
+  color: #ffd65a;
+  font-size: 1em;
+}
+
+/* =============================
+   Optional Overlay Enhancement
+   ============================= */
+#overlay {
+  background-color: rgba(0, 0, 0, 0.65); /* slightly darker overlay */
+}
