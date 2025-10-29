@@ -3,9 +3,11 @@ FROM node:20 AS frontend-build
 
 WORKDIR /app/frontend
 
-# Copy only frontend files first (to leverage cache)
+# Copy only package files first for caching
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm install
+
+# Copy all frontend source and build
 COPY frontend/ ./
 RUN npm run build
 
@@ -14,14 +16,15 @@ FROM maven:3.9.2-eclipse-temurin-17 AS backend-build
 
 WORKDIR /app
 
-# Copy pom.xml first for caching
+# Copy pom.xml first (cache dependencies)
 COPY pom.xml ./
-COPY frontend/pom.xml ./frontend/ # optional if you have separate pom.xml
 RUN mvn dependency:go-offline
 
 # Copy backend source
 COPY src ./src
-COPY frontend/build ./src/main/resources/static
+
+# Copy built React frontend into Spring Boot resources
+COPY --from=frontend-build /app/frontend/build ./src/main/resources/static
 
 # Package Spring Boot app
 RUN mvn clean package -DskipTests
